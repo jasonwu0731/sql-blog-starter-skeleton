@@ -24,9 +24,9 @@ class ArticlesPage extends Component {
     const { articles } = this.state;
     return articles.map(article => (
       <tr>
-        <td><a href={`#/articles/${article._id}`} key={article._id}>{article.title}</a></td>
-        <td><a href={`#/articles/${article._id}`} key={article._id}>{article.tags.join(', ')}</a></td>
-        <th><a href={`#/articles/${article._id}`} key={article._id}>{article.created_at}</a></th>
+        <td><a href={`#/articles/${article.id}`} key={article.id}>{article.title}</a></td>
+        <td><a href={`#/articles/${article.id}`} key={article.id}>{(article.tags || []).join(', ')}</a></td>
+        <th><a href={`#/articles/${article.id}`} key={article.id}>{article.createdAt}</a></th>
       </tr>
     ));
   }

@@ -125,7 +125,7 @@ class SingleArticlePage extends Component {
   }
 
   renderTags = () => {
-    const { isEditing, tags } = this.state;
+    const { isEditing, tags = [] } = this.state;
     if (isEditing) {
       return (
         <TagsInput

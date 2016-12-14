@@ -1,56 +1,81 @@
 import { Router } from 'express';
 
-import { Article } from '../models/';
+import models from '../models';
+
+const { Article, Tag, ArticleTag } = models;
 
 const articleRouter = new Router();
 
-articleRouter.get('/', (req, res) => {
-  Article.find().exec((err, articles) => {
-    if (err) return res.status(500).send(err);
+articleRouter.get('/', async (req, res) => {
+  try {
+    const articles = await Article.all();
 
-    return res.json(articles);
-  });
+    res.json(articles);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
-articleRouter.get('/:id', (req, res) => {
+articleRouter.get('/:id', async (req, res) => {
   const id = req.params.id;
-  Article.findById(id, (err, article) => {
-    if (err) return res.status(500).send(err);
-    return res.json(article);
-  });
+  const article = await Article.findById(id);
+  res.json(article);
 });
 
-articleRouter.post('/', (req, res) => {
+articleRouter.post('/', async (req, res) => {
   const { title, content, tags } = req.body;
 
-  Article.create({
+  const article = await Article.create({
     title,
     content,
-    tags
-  }, (err, article) => res.json(article));
-});
+    userId: 1,
+  });
 
-articleRouter.put('/:id', (req, res) => {
-  const { title, content, tags } = req.body;
-  const query = {
-    _id: req.params.id,
-  };
-  Article.findOneAndUpdate(query, {
-    title,
-    content,
-    tags
-  }, { new: true }, (err, article) => res.json(article));
-});
-
-articleRouter.delete('/:id', (req, res) => {
-  const id = req.params.id;
-
-  Article.findByIdAndRemove(id, err => {
-    if (err) return res.status(500).send(err);
-    return res.json({
-      status: 'ok',
-      message: `article ${id} is deleted!`,
+  for (let i = 0; i < tags.length; i += 1) {
+    const [tag] = await Tag.findOrCreate({
+      where: {
+        name: tags[i],
+      },
     });
+
+    await ArticleTag.create({
+      articleId: article.id,
+      tagId: tag.id,
+    });
+  }
+
+  res.json(article);
+});
+
+articleRouter.put('/:id', async (req, res) => {
+  const { title, content, tags } = req.body;
+  const id = req.params.id;
+  await Article.update({
+    title,
+    content,
+  }, {
+    where: {
+      id,
+    },
+  });
+
+  // FIXME: tags
+
+  const article = await Article.findById(id);
+  res.json(article);
+});
+
+articleRouter.delete('/:id', async (req, res) => {
+  const id = req.params.id;
+
+  await Article.destroy({
+    where: {
+      id,
+    },
+  });
+
+  res.json({
+    deletedId: +id,
   });
 });
 
