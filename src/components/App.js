@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
 import HomePage from './HomePage';
+import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
 import ArticlesPage from './ArticlesPage';
 import SingleArticlePage from './SingleArticlePage';
 import CreateArticlePage from './CreateArticlePage';
@@ -8,6 +10,7 @@ import CreateArticlePage from './CreateArticlePage';
 class App extends Component {
   state = {
     route: window.location.hash.substr(1),
+    user: null,
   };
 
   componentDidMount() {
@@ -19,20 +22,33 @@ class App extends Component {
   }
 
   renderRoute() {
-    if (this.state.route === '/articles') {
-      return <ArticlesPage />;
-    }
+    if (this.state.user == null) {
+      if(this.state.route === '/login') {
+        console.log('Login')
+        return <LoginPage setUserInfo={ user => { this.setState({user: user}); }}/>;
+      }
+      if(this.state.route === '/register') {
+        console.log('Register')
+        return <RegisterPage />;
+      }
 
-    if (this.state.route === '/articles/new') {
-      return <CreateArticlePage />;
-    }
+      return <HomePage user=''/>;
+    } else {
+      if (this.state.route === '/articles') {
+        return <ArticlesPage user={this.state.user}/>;
+      }
 
-    if (this.state.route.startsWith('/articles/')) {
-      const id = this.state.route.split('/articles/')[1];
-      return <SingleArticlePage id={id} />;
-    }
+      if (this.state.route === '/articles/new') {
+        return <CreateArticlePage user={this.state.user}/>;
+      }
 
-    return <HomePage />;
+      if (this.state.route.startsWith('/articles/')) {
+        const id = this.state.route.split('/articles/')[1];
+        return <SingleArticlePage id={id} user={this.state.user}/>;
+      }
+
+      return <HomePage user={this.state.user}/>;
+    }
   }
 
   renderBreadcrumb() {
@@ -75,9 +91,19 @@ class App extends Component {
               <li>
                 <a href="#/">Home</a>
               </li>
-              <li>
-                <a href="#/articles">Articles</a>
-              </li>
+              { this.state.user ? (
+                <li>
+                  <a href="#/articles">Articles</a>
+                </li>) : null}
+              {
+                this.state.user ? (
+                <li>
+                  <a href="#/" onClick={() => { this.setState({ user: null }); }}>Log Out</a>
+                </li>) : (
+                <li>
+                  <a href="#/login">Log In</a>
+                </li>)
+              }
             </ul>
           </div>
         </nav>

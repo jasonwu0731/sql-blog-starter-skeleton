@@ -25,7 +25,8 @@ class CreateArticlePage extends Component {
   handleSubmitClick = () => {
     const confirm = window.confirm('確定要新增文章嗎？');
     if (confirm) {
-      const body = this.state;
+      let body = this.state;
+      body.userId = this.props.user.id;
       fetch('/api/articles', {
         headers: {
           Accept: 'application/json',
@@ -40,7 +41,7 @@ class CreateArticlePage extends Component {
           tags: [],
         });
         console.log(result);
-      });
+      }).catch(err => console.log('POST failed!!'));
     }
   }
 

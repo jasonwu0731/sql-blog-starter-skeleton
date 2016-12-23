@@ -8,7 +8,8 @@ class HomePage extends Component {
         <div className="row">
           <div className="col-md-12">
             <div className="jumbotron">
-              <h1>Hi, Welcome Blog!</h1>
+              <h1>Hello, {this.props.user.name} </h1>
+              <h3>Welcome Blog!</h3>
               <p><a className="btn btn-success btn-lg" href="#/articles" role="button">文章列表</a></p>
               <p><a className="btn btn-success btn-lg" href="#/articles/new" role="button">發表新文章</a></p>
             </div>

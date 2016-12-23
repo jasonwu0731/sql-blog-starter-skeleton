@@ -22,10 +22,16 @@ class ArticlesPage extends Component {
 
   renderArticles() {
     const { articles } = this.state;
-    return articles.map(article => (
+    //console.log(articles)
+    //articles.map( article => { 
+    //  console.log('article', article)
+    //  console.log('article.tags', article.tags)
+    //  //console.log('article.tags.name', article.tags[0].name)
+    //} );
+    return articles.filter(article => (article.userId === this.props.user.id)).map( article => (
       <tr>
         <td><a href={`#/articles/${article.id}`} key={article.id}>{article.title}</a></td>
-        <td><a href={`#/articles/${article.id}`} key={article.id}>{(article.tags || []).join(', ')}</a></td>
+        <td><a href={`#/articles/${article.id}`} key={article.id}>{(article.tags.map( tag => (tag[0].name)) || []).join(', ')}</a></td>
         <th><a href={`#/articles/${article.id}`} key={article.id}>{article.createdAt}</a></th>
       </tr>
     ));

@@ -8,11 +8,32 @@ const articleRouter = new Router();
 
 articleRouter.get('/', async (req, res) => {
   try {
-    const articles = await Article.all();
-
-    res.json(articles);
+    //console.log(models);
+    let articles = await Article.all();
+    articles = await Promise.all( articles.map( async article => {
+        let tags;
+        let article_tags;
+        article_tags = await ArticleTag.findAll({ where: { articleId: article.id } });
+        //console.log('article_tags', article_tags);
+        tags = await Promise.all( article_tags.map( async article_tag => {
+            let name;
+            name = await Tag.findAll({ where: { id: article_tag.tagId } });
+            //console.log('name', name);
+            return name
+          })
+        )
+        article.dataValues.tags = tags;
+        //console.log('tags in api', tags);
+        //console.log('tags[0] in api', tags[0]);
+        return article;
+      }),
+    )
+    //console.log('articles in api', articles )
+    //console.log('articles[0].tags in api', articles[0].tags)
+    //console.log('typeof(articles)', typeof(articles)) 
+    res.send(articles);
   } catch (err) {
-    console.error(err);
+    console.error('GET ERROR ',err);
   }
 });
 
@@ -23,12 +44,12 @@ articleRouter.get('/:id', async (req, res) => {
 });
 
 articleRouter.post('/', async (req, res) => {
-  const { title, content, tags } = req.body;
+  const { userId, title, content, tags } = req.body;
 
   const article = await Article.create({
     title,
     content,
-    userId: 1,
+    userId,
   });
 
   for (let i = 0; i < tags.length; i += 1) {
@@ -50,6 +71,8 @@ articleRouter.post('/', async (req, res) => {
 articleRouter.put('/:id', async (req, res) => {
   const { title, content, tags } = req.body;
   const id = req.params.id;
+
+  //console.log("PUT NOT IMPLEMENT!!!!!!!!!!!!")
   await Article.update({
     title,
     content,
