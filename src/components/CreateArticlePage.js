@@ -41,6 +41,7 @@ class CreateArticlePage extends Component {
           tags: [],
         });
         console.log(result);
+        window.location.href = '#/articles';
       }).catch(err => console.log('POST failed!!'));
     }
   }

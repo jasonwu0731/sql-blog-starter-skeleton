@@ -30,12 +30,13 @@ class SingleArticlePage extends Component {
         this.setState({
           title: article.title,
           content: article.content,
-          tags: article.tags,
+          tags: article.tags.map( tag => (tag[0].name))
         });
       });
   }
 
   componentDidUpdate() {
+    /*
     const id = this.props.id;
     fetch(`/api/articles/${id}`)
       .then(res => res.json())
@@ -44,6 +45,7 @@ class SingleArticlePage extends Component {
           article,
         });
       });
+    */
   }
 
   onEditorChange = editorContent => {
@@ -72,7 +74,8 @@ class SingleArticlePage extends Component {
       .then(() => {
         window.alert('刪除成功');
         window.location = 'http://localhost:3000/#/articles';
-      });
+      })
+      .catch( err => console.log('delete error !!! '));
     }
   }
 
@@ -126,6 +129,7 @@ class SingleArticlePage extends Component {
 
   renderTags = () => {
     const { isEditing, tags = [] } = this.state;
+    //console.log('tags',tags)
     if (isEditing) {
       return (
         <TagsInput

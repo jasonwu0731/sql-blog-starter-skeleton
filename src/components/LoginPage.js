@@ -32,7 +32,7 @@ class LoginPage extends Component {
         });
         console.log(json);
         if(json.success == true){
-          window.alert('登入成功');
+          //window.alert('登入成功');
           const info = {name:json.name, id: json.id};
           this.props.setUserInfo( info );
           document.location.href = '#/';
@@ -64,22 +64,28 @@ class LoginPage extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-12">
+            Login Page
+          </div>         
+        </div>
+        <div className="row">
+          <div className="col-md-4">
             <button
-              className="btn btn-info pull-right"
+              className="btn btn-primary pull-right"
               role="button"
               onClick={this.handleSubmitClick}
             >登入</button>
             <button
-              className="btn btn-info pull-left"
+              className="btn btn-primary pull-right"
               role="button"
               onClick={this.handleRegisterClick}
             >註冊帳號</button>
-          </div>
+          </div>         
         </div>
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-md-4"></div>
+          <div className="col-md-4">
             <div className="input-group">
-              <span className="input-group-addon" id="article-title"></span>
+              <span className="input-group-addon" id="article-title">@</span>
               <input
                 type="text"
                 className="form-control"
@@ -90,13 +96,14 @@ class LoginPage extends Component {
               />
             </div>
           </div>
+          <div className="col-md-4"></div>
         </div>
         <div className="row">
           <div className="col-md-12">
             <div className="input-group">
-              <span className="input-group-addon" id="article-title"></span>
+              <span className="input-group-addon" id="article-title">@</span>
               <input
-                type="text"
+                type="password"
                 className="form-control"
                 placeholder="密碼"
                 aria-describedby="article-title"

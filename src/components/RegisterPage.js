@@ -16,26 +16,57 @@ class LoginPage extends Component {
     //console.log(this.state)
     //const confirm = window.confirm('確定要新增使用者嗎？');
     //if (confirm) {
-      const body = this.state;
-      fetch('/api/auth/signup', {
+    const body = this.state;
+    if (body.name=='' || body.password=='' || body.email==''){
+      window.alert("註冊失敗, 請填寫所有資訊")
+    } else {
+      let status = 1;
+      //Check Valid or Not
+      fetch('/api/auth/exist',{
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         method: 'POST',
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       })
       .then( res => res.json() )
       .then( json => {
+        console.log(json);
+        if(json.exist == true){
+          status = 0;
+        }; 
+      })
+      //console.log(status)
+      if (status == 1) {
+        fetch('/api/auth/signup', {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify(body),
+        })
+        .then( res => res.json() )
+        .then( json => {
+          this.setState({
+            email: '',
+            password: '',
+            name: '',
+          });
+          window.alert('註冊成功');
+          window.location.href = '#/login';
+        })
+      } else {
+        window.alert('註冊失敗，使用者email已被使用');
         this.setState({
-          email: '',
-          password: '',
-          name: '',
+            email: '',
+            password: '',
+            name: '',
         });
-        //console.log(json)
-      }).then( window.location.href = '#/login');
+      }
     }
-  //}
+  }
 
   handleNameChange = e => {
     this.setState({
@@ -60,8 +91,13 @@ class LoginPage extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-12">
+            Register Page
+          </div>         
+        </div>
+        <div className="row">
+          <div className="col-md-12">
             <button
-              className="btn btn-info pull-right"
+              className="btn btn-Danger pull-right"
               role="button"
               onClick={this.handleSubmitClick}
             >送出</button>
@@ -102,7 +138,7 @@ class LoginPage extends Component {
             <div className="input-group">
               <span className="input-group-addon" id="article-title"></span>
               <input
-                type="text"
+                type="password"
                 className="form-control"
                 placeholder="密碼"
                 aria-describedby="article-title"
